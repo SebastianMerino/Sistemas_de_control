@@ -2,8 +2,6 @@
 #define MPU_H
 
 #include "Arduino.h"
-#include "MPU6050.h"
-// #include "SoftwareSerial.h"
 #include "i2c.h"
 
 //Direcciones de registros de configuracion del dispositivo
@@ -54,16 +52,14 @@ typedef struct mpuData {
     double Gx;
     double Gy;
     double Gz;
-    double modulo;
 }mpuStructData;
 
 void mpuInit(void);
-mpuStructData mpuGetLocationData(void);
+mpuStructData mpuGetData(void);
 void mpuReadRawValue(uint8_t deviceAddress, uint8_t regAddress);
 void mpuConvertRawValues(mpuStructData *mpuMeasurments);
 int16_t mpuGetAccelOffsetX(void);
 int16_t mpuGetAccelOffsetY(void);
 int16_t mpuGetAccelOffsetZ(void);
-void mpuPrintReadings(mpuStructData *mpuMeasurements);
 
 #endif

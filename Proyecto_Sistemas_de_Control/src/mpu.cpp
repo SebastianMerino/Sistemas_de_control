@@ -6,15 +6,6 @@ static int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;
 // Valores de factor de sensibilidad, dependen de la hoja tecnica del dispositivo
 const uint16_t AccelScaleFactor = 16384;
 const uint16_t GyroScaleFactor = 131;
-float limit_value = 0;
-int counter_false_movements = 0;
-int flag_set_ubication = 1;
-int flag_evaluate_movement = 1;
-
-//Aceleraciones iniciales
-float Axi=0;
-float Ayi=0;
-float Azi=0;
 
 void mpuInit(void)
 {
@@ -30,27 +21,13 @@ void mpuInit(void)
     i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_INT_ENABLE, 0x01);
     i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_SIGNAL_PATH_RESET, 0x00);
     i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_USER_CTRL, 0x00);
-
-#ifdef PRINT_ACCELEROMETER_INIT
-    Serial.print(" * Accelerometer offsets: ");
-    Serial.print(mpu_getAccelOffsetX());
-    Serial.print(" / ");
-    Serial.print(mpu_getAccelOffsetY());
-    Serial.print(" / ");
-    Serial.println(mpu_getAccelOffsetZ());
-
-    Serial.println();
-#endif
 }
 
-mpuStructData mpuGetLocationData(void)
+mpuStructData mpuGetData(void)
 {
     mpuStructData mpuMeasurements;
-
     mpuReadRawValue(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_ACCEL_XOUT_H);
     mpuConvertRawValues(&mpuMeasurements);
-    mpuMeasurements.modulo = sqrt(pow(mpuMeasurements.Ax, 2) + pow(mpuMeasurements.Ay, 2) + pow(mpuMeasurements.Az, 2));
-
     return mpuMeasurements;
 }
 
@@ -105,18 +82,4 @@ int16_t mpuGetAccelOffsetY(void)
 int16_t mpuGetAccelOffsetZ(void)
 {
     return i2cReadRegister16(MPU6050_REG_ACCEL_ZOFFS_H);
-}
-
-void mpuPrintReadings(mpuStructData *mpuMeasurements)
-{
-    Serial.print(" Ax: ");
-    Serial.print(mpuMeasurements->Ax);
-    Serial.print(" Ay: ");
-    Serial.print(mpuMeasurements->Ay);
-    Serial.print(" Az: ");
-    Serial.print(mpuMeasurements->Az);
-    Serial.print(" Modulo vector: ");
-    Serial.print(mpuMeasurements->modulo);
-    Serial.print(" T: ");
-    Serial.println(mpuMeasurements->T);
 }
