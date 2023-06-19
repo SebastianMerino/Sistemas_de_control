@@ -4,8 +4,8 @@
 #include "Arduino.h"
 #include "Wire.h"
 
-#define SCL 21
-#define SDA 22
+#define SCL 15
+#define SDA 2
 
 void i2cInit(uint8_t slaveAddress);
 void i2cWrite(uint8_t deviceAddress, uint8_t regAddress, uint8_t data);

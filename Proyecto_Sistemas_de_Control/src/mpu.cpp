@@ -4,8 +4,8 @@ static int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;
 
 // sensitivity scale factor respective to full scale setting provided in datasheet
 // Valores de factor de sensibilidad, dependen de la hoja tecnica del dispositivo
-const uint16_t AccelScaleFactor = 16384;
-const uint16_t GyroScaleFactor = 131;
+const double AccelScaleFactor = 1670.1; 	// aceleracion en m/s
+const double GyroScaleFactor = 131.07;	// vel angular en °/s
 
 void mpuInit(void)
 {
@@ -58,15 +58,15 @@ float getTemperatureData(void){
     return dataTemp;
 }
 
-void mpuConvertRawValues(mpuStructData *mpuMeasurments)
+void mpuConvertRawValues(mpuStructData *mpuMeasurements)
 {
-    mpuMeasurments->Ax = (double)AccelX / AccelScaleFactor;
-    mpuMeasurments->Ay = (double)AccelY / AccelScaleFactor;
-    mpuMeasurments->Az = (double)AccelZ / AccelScaleFactor;
-    mpuMeasurments->T = (double)Temperature / 340 + 36.53; // formula de temperatura
-    mpuMeasurments->Gx = (double)GyroX / GyroScaleFactor;
-    mpuMeasurments->Gy = (double)GyroY / GyroScaleFactor;
-    mpuMeasurments->Gz = (double)GyroZ / GyroScaleFactor;
+    mpuMeasurements->Ax = (double)AccelX / AccelScaleFactor;
+    mpuMeasurements->Ay = (double)AccelY / AccelScaleFactor;
+    mpuMeasurements->Az = (double)AccelZ / AccelScaleFactor;
+    mpuMeasurements->T = (double)Temperature / 340 + 36.53; // formula de temperatura
+    mpuMeasurements->Gx = (double)GyroX / GyroScaleFactor;
+    mpuMeasurements->Gy = (double)GyroY / GyroScaleFactor;
+    mpuMeasurements->Gz = (double)GyroZ / GyroScaleFactor;
 }
 
 int16_t mpuGetAccelOffsetX(void)

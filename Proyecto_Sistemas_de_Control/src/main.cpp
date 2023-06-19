@@ -39,9 +39,11 @@ void setup() {
   motor.init(20000,374);//960, 1280
   Serial.println("Driver configurado :)");
   delay(1000);  
-  RespuestaImpulso();  
+  //RespuestaImpulso();  
 }
 
 void loop() {
 	delay(1000);
+	mpuStructData data = mpuGetData();
+	Serial.printf("Ax: %f, Az:%f, Gy:%f\n",data.Ax,data.Az,data.Gy);
 }
