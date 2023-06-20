@@ -56,6 +56,9 @@ typedef struct mpuData {
 
 void mpuInit(void);
 mpuStructData mpuGetData(void);
+void updateAngleTask(void);
+double getAngle(void);
+double getAngularVelocity(void);
 void mpuReadRawValue(uint8_t deviceAddress, uint8_t regAddress);
 void mpuConvertRawValues(mpuStructData *mpuMeasurments);
 int16_t mpuGetAccelOffsetX(void);

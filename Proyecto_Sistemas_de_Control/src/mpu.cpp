@@ -6,6 +6,26 @@ static int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;
 // Valores de factor de sensibilidad, dependen de la hoja tecnica del dispositivo
 const double AccelScaleFactor = 1670.1; 	// aceleracion en m/s
 const double GyroScaleFactor = 131.07;	// vel angular en °/s
+double ang = 0, vel_ang;
+
+void updateAngleTask(void)
+{
+    const double peso_giro = 0.98;
+    const double T_ang = 0.5;       // periodo
+    double ang_acc;
+    TickType_t PeriodAngTicks, LastTimeAng;
+    PeriodAngTicks = T_ang*1000;
+    while (1) {
+        mpuStructData mpuData = mpuGetData();        
+        ang_acc = atan(mpuData.Ax/mpuData.Az)*(180.0/M_PI);
+        vel_ang = mpuData.Gy;
+        ang = peso_giro*(ang + vel_ang*T_ang) + (1 - peso_giro)*ang_acc;
+        vTaskDelayUntil(&LastTimeAng, PeriodAngTicks);
+    }
+}
+
+double getAngle(void) { return ang; }
+double getAngularVelocity(void) { return vel_ang; }
 
 void mpuInit(void)
 {

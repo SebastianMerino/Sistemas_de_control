@@ -23,10 +23,14 @@
 		{
 			"name": "lab4",
 			"path": "lab4"
-		}
+		},
 		{
 			"name": "Proyecto_Sistemas_De_Control",
 			"path": "Proyecto_Sistemas_De_Control"
+		},
+		{
+			"name": "lab5",
+			"path": "lab5"
 		}
 	],
 	"settings": {}
