@@ -6,20 +6,23 @@ static int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;
 // Valores de factor de sensibilidad, dependen de la hoja tecnica del dispositivo
 const double AccelScaleFactor = 1670.1; 	// aceleracion en m/s
 const double GyroScaleFactor = 131.07;	// vel angular en °/s
-double ang = 0, vel_ang;
+double ang = 0, vel_ang = 0;
 
-void updateAngleTask(void)
+void updateAngleTask(void* params)
 {
     const double peso_giro = 0.98;
-    const double T_ang = 0.5;       // periodo
+    const double T_ang = 0.002;       // periodo
     double ang_acc;
     TickType_t PeriodAngTicks, LastTimeAng;
+    ang = 0;
     PeriodAngTicks = T_ang*1000;
     while (1) {
-        mpuStructData mpuData = mpuGetData();        
-        ang_acc = atan(mpuData.Ax/mpuData.Az)*(180.0/M_PI);
-        vel_ang = mpuData.Gy;
-        ang = peso_giro*(ang + vel_ang*T_ang) + (1 - peso_giro)*ang_acc;
+        mpuStructData mpuData = mpuGetData();
+        ang_acc = atan2(mpuData.Ax,mpuData.Az)*(180.0/M_PI);
+        vel_ang = -mpuData.Gy;
+        if (mpuData.Az != 0) {
+            ang = peso_giro*(ang + vel_ang*T_ang) + (1 - peso_giro)*ang_acc;
+        }
         vTaskDelayUntil(&LastTimeAng, PeriodAngTicks);
     }
 }
@@ -41,6 +44,8 @@ void mpuInit(void)
     i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_INT_ENABLE, 0x01);
     i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_SIGNAL_PATH_RESET, 0x00);
     i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_USER_CTRL, 0x00);
+
+    xTaskCreate(updateAngleTask,"",2000,NULL,1,NULL);
 }
 
 mpuStructData mpuGetData(void)

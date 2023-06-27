@@ -17,7 +17,7 @@ void IRAM_ATTR ISR_encoder()
     if(digitalRead(encoder_CHB_D) == LOW){
         Periodo = (-1)*Periodo;
         counter--;
-    }else counter++;
+    } else counter++;
     
 }
 
@@ -29,11 +29,12 @@ void Motor_VA::init(int freq, double resolution){
     pinMode(I_IN2, OUTPUT);
     //Serial.println("Pines configurados");
 
-    ledcSetup(1, freq, 10);
-    ledcSetup(2, freq, 10);
-
-    ledcAttachPin(PWM_D, 1);
-    ledcAttachPin(PWM_I, 2);
+    pinMode(PWM_D, OUTPUT);
+    pinMode(PWM_I, OUTPUT);
+    // ledcSetup(1, freq, 10);
+    // ledcSetup(2, freq, 10);
+    // ledcAttachPin(PWM_D, 1);
+    // ledcAttachPin(PWM_I, 2);
 
 
     pinMode(encoder_CHA_D,INPUT_PULLDOWN);
@@ -58,23 +59,22 @@ void Motor_VA::tb6612fng_Voltage(double vp){
 
     if(vp>7.4) vp = 7.4;
     if(vp<-7.4) vp = -7.4;
-    int Duty = (int) ( (1 - abs(vp)/vm) * 1024.0);
+    int Duty = (int) ( 255 - (1 - abs(vp)/vm) * 255.0);
 
     if(vp>0){
         digitalWrite(D_IN1,HIGH);
         digitalWrite(D_IN2,LOW);
         digitalWrite(I_IN1,HIGH);
         digitalWrite(I_IN2,LOW);
-        ledcWrite(1, Duty);
-        //
-        ledcWrite(2, Duty);
+        analogWrite(PWM_D, Duty);
+        analogWrite(PWM_I, Duty);
     }else{
         digitalWrite(D_IN1,LOW);
         digitalWrite(D_IN2,HIGH);
         digitalWrite(I_IN1,LOW);
         digitalWrite(I_IN2,HIGH);
-        ledcWrite(1, Duty);
-        //ledcWrite(2, Duty);
+        analogWrite(PWM_D, Duty);
+        analogWrite(PWM_I, Duty);
     }
 }
 
@@ -85,8 +85,8 @@ double Motor_VA::GetEncoderSpeed(int modo){
     {
     case DEGREES_PER_SECOND:
         vel = 360000000.0/(this->_resolution*Periodo);
-        if(abs(vel)>800)vel=vel_ant;
-        if(abs(vel-vel_ant)>100)vel=vel_ant;
+        //if(abs(vel)>800)vel=vel_ant;
+        //if(abs(vel-vel_ant)>100)vel=vel_ant;
         break;
     case RADS_PER_SECOND:
         vel = 6283185.30717/(this->_resolution*Periodo);
