@@ -61,6 +61,7 @@ double getAngle(void);
 double getAngularVelocity(void);
 void mpuReadRawValue(uint8_t deviceAddress, uint8_t regAddress);
 void mpuConvertRawValues(mpuStructData *mpuMeasurments);
+void initAngleTask(void);
 int16_t mpuGetAccelOffsetX(void);
 int16_t mpuGetAccelOffsetY(void);
 int16_t mpuGetAccelOffsetZ(void);

@@ -18,8 +18,8 @@ void updateAngleTask(void* params)
     PeriodAngTicks = T_ang*1000;
     while (1) {
         mpuStructData mpuData = mpuGetData();
-        ang_acc = atan2(mpuData.Ax,mpuData.Az)*(180.0/M_PI);
-        vel_ang = -mpuData.Gy;
+        ang_acc = -atan2(mpuData.Ax,mpuData.Az)*(180.0/M_PI);
+        vel_ang = mpuData.Gy;
         if (mpuData.Az != 0) {
             ang = peso_giro*(ang + vel_ang*T_ang) + (1 - peso_giro)*ang_acc;
         }
@@ -43,8 +43,10 @@ void mpuInit(void)
     i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_FIFO_EN, 0x00);
     i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_INT_ENABLE, 0x01);
     i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_SIGNAL_PATH_RESET, 0x00);
-    i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_USER_CTRL, 0x00);
+    i2cWrite(MPU6050_SLAVE_ADDRESS, MPU6050_REGISTER_USER_CTRL, 0x00);    
+}
 
+void initAngleTask (void){
     xTaskCreate(updateAngleTask,"",2000,NULL,1,NULL);
 }
 
